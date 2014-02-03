@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     /* ***************************** */
     manager = new Manager(this);
 
-    db =  QSqlDatabase::addDatabase("QSQLITE", "qSQLITE3connection");
+    db =  QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("dbname.sqlite");
     db.open();
 
@@ -28,13 +28,6 @@ MainWindow::MainWindow(QWidget *parent) :
     sqlModel->setTable("books");
 
     table->setModel(sqlModel);
-    table->verticalHeader()->hide();
-    table->setSortingEnabled(true);
-    table->setShowGrid(0);
-    table->setSelectionBehavior(QAbstractItemView::SelectRows);
-    table->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    table->setColumnHidden(0, true);
-    table->setColumnHidden(4, true);
 
     picture->setBackgroundRole(QPalette::Base);
     /* ********************************************** */
@@ -55,19 +48,22 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(showError(const QString)) );
 
     /* ********************************************** */
-    ui->statusBar->showMessage(tr("please wait..."));
-    ui->centralWidget->setDisabled(true);
-    manager->update();
+    //ui->statusBar->showMessage(tr("please wait..."));
+    //ui->centralWidget->setDisabled(true);
+    //manager->update();
+    on_Update_clicked();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
     delete manager;
+    delete sqlModel;
 }
 
 void MainWindow::on_Update_clicked()
 {
+
     ui->statusBar->showMessage(tr("updated..."));
     ui->centralWidget->setDisabled(true);
     manager->update();
@@ -83,9 +79,20 @@ void MainWindow::onTableElementClicked (const QModelIndex &index )
 
 void MainWindow::updateView()
 {
+    sqlModel->setTable("books");
+
+    table->verticalHeader()->hide();
+    table->setSortingEnabled(true);
+    table->setShowGrid(0);
+    table->setSelectionBehavior(QAbstractItemView::SelectRows);
+    table->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    table->setColumnHidden(0, true);
+    table->setColumnHidden(4, true);
+
     ui->statusBar->showMessage(tr("ready"));
-    sqlModel->select();
+
     ui->centralWidget->setEnabled(true);
+    sqlModel->select();
 }
 
 void MainWindow::showError(const QString errorMessage)

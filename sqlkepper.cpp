@@ -25,7 +25,7 @@ SqlKepper::SqlKepper(QObject *parent) :
 
 void SqlKepper::wrapJson(QJsonObject& jsonObj)
 {
-    db = QSqlDatabase::database("qSQLITE3connection");
+    db = QSqlDatabase::database();
     if(!db.isOpen())
     {
         emit dbConnectionError("db not available");
